@@ -28,6 +28,7 @@ class Planting(Base):
     farm = relationship("Farm")
     bed = relationship("Bed", back_populates="plantings")
     line = relationship("Line", back_populates="plantings")
+    harvests = relationship("Harvest", back_populates="planting")
     
     class Config:
         orm_mode = True 

@@ -7,7 +7,8 @@ import {
   Calendar, 
   BarChart3,
   Menu,
-  X
+  X,
+  Scissors
 } from 'lucide-react'
 import { useState } from 'react'
 import { useLanguage } from '../contexts/LanguageContext'
@@ -22,6 +23,7 @@ const navigation = [
   { name: 'nav.farms', href: '/farms', icon: Building2 },
   { name: 'nav.crops', href: '/crops', icon: Sprout },
   { name: 'nav.plantings', href: '/plantings', icon: Calendar },
+  { name: 'nav.harvests', href: '/harvests', icon: Scissors },
   { name: 'nav.scheduler', href: '/scheduler', icon: BarChart3 },
 ]
 
