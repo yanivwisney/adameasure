@@ -1,0 +1,204 @@
+from sqlalchemy.orm import Session
+from app.models.crop import Crop
+
+def seed_crops(db: Session):
+    """Seed the database with initial crop data"""
+    
+    crops_data = [
+        # Vegetables
+        {
+            "name": "Tomatoes",
+            "scientific_name": "Solanum lycopersicum",
+            "category": "vegetable",
+            "growing_time_days": 70,
+            "planting_depth_cm": 1.0,
+            "spacing_cm": 60.0,
+            "row_spacing_cm": 90.0,
+            "best_planting_seasons": [3, 4, 5, 6],  # March-June
+            "min_temperature_c": 15.0,
+            "max_temperature_c": 30.0,
+            "frost_tolerant": False,
+            "expected_yield_per_sqm": 8.0,
+            "harvest_window_days": 14,
+            "sun_requirements": "full_sun",
+            "water_requirements": "medium",
+            "soil_ph_min": 6.0,
+            "soil_ph_max": 7.0,
+            "market_price_per_kg": 3.5,
+            "storage_life_days": 7,
+            "description": "Popular summer vegetable with high market demand",
+            "growing_notes": "Requires staking or trellising. Prune suckers for better yield."
+        },
+        {
+            "name": "Lettuce",
+            "scientific_name": "Lactuca sativa",
+            "category": "vegetable",
+            "growing_time_days": 45,
+            "planting_depth_cm": 0.5,
+            "spacing_cm": 30.0,
+            "row_spacing_cm": 45.0,
+            "best_planting_seasons": [2, 3, 4, 9, 10, 11],  # Feb-Apr, Sep-Nov
+            "min_temperature_c": 10.0,
+            "max_temperature_c": 25.0,
+            "frost_tolerant": True,
+            "expected_yield_per_sqm": 2.5,
+            "harvest_window_days": 7,
+            "sun_requirements": "partial_shade",
+            "water_requirements": "high",
+            "soil_ph_min": 6.0,
+            "soil_ph_max": 7.5,
+            "market_price_per_kg": 2.0,
+            "storage_life_days": 10,
+            "description": "Fast-growing leafy green, great for continuous harvest",
+            "growing_notes": "Plant in partial shade during hot weather. Harvest outer leaves for continuous production."
+        },
+        {
+            "name": "Carrots",
+            "scientific_name": "Daucus carota",
+            "category": "vegetable",
+            "growing_time_days": 75,
+            "planting_depth_cm": 0.5,
+            "spacing_cm": 5.0,
+            "row_spacing_cm": 30.0,
+            "best_planting_seasons": [2, 3, 4, 8, 9, 10],  # Feb-Apr, Aug-Oct
+            "min_temperature_c": 8.0,
+            "max_temperature_c": 25.0,
+            "frost_tolerant": True,
+            "expected_yield_per_sqm": 4.0,
+            "harvest_window_days": 30,
+            "sun_requirements": "full_sun",
+            "water_requirements": "medium",
+            "soil_ph_min": 6.0,
+            "soil_ph_max": 7.0,
+            "market_price_per_kg": 1.8,
+            "storage_life_days": 30,
+            "description": "Root vegetable with good storage life",
+            "growing_notes": "Loose, well-drained soil is essential. Thin seedlings for better root development."
+        },
+        {
+            "name": "Cucumbers",
+            "scientific_name": "Cucumis sativus",
+            "category": "vegetable",
+            "growing_time_days": 60,
+            "planting_depth_cm": 2.0,
+            "spacing_cm": 45.0,
+            "row_spacing_cm": 90.0,
+            "best_planting_seasons": [4, 5, 6, 7],  # April-July
+            "min_temperature_c": 15.0,
+            "max_temperature_c": 30.0,
+            "frost_tolerant": False,
+            "expected_yield_per_sqm": 6.0,
+            "harvest_window_days": 21,
+            "sun_requirements": "full_sun",
+            "water_requirements": "high",
+            "soil_ph_min": 6.0,
+            "soil_ph_max": 7.0,
+            "market_price_per_kg": 2.5,
+            "storage_life_days": 7,
+            "description": "Summer vegetable with high water content",
+            "growing_notes": "Requires consistent moisture. Trellising improves yield and reduces disease."
+        },
+        {
+            "name": "Spinach",
+            "scientific_name": "Spinacia oleracea",
+            "category": "vegetable",
+            "growing_time_days": 40,
+            "planting_depth_cm": 1.0,
+            "spacing_cm": 15.0,
+            "row_spacing_cm": 30.0,
+            "best_planting_seasons": [2, 3, 4, 9, 10, 11],  # Feb-Apr, Sep-Nov
+            "min_temperature_c": 5.0,
+            "max_temperature_c": 20.0,
+            "frost_tolerant": True,
+            "expected_yield_per_sqm": 2.0,
+            "harvest_window_days": 14,
+            "sun_requirements": "partial_shade",
+            "water_requirements": "medium",
+            "soil_ph_min": 6.0,
+            "soil_ph_max": 7.5,
+            "market_price_per_kg": 3.0,
+            "storage_life_days": 5,
+            "description": "Nutrient-rich leafy green",
+            "growing_notes": "Plant in cool weather. Harvest outer leaves for continuous production."
+        },
+        # Fruits
+        {
+            "name": "Strawberries",
+            "scientific_name": "Fragaria × ananassa",
+            "category": "fruit",
+            "growing_time_days": 90,
+            "planting_depth_cm": 0.0,  # Plant at soil level
+            "spacing_cm": 30.0,
+            "row_spacing_cm": 60.0,
+            "best_planting_seasons": [3, 4, 8, 9],  # March-April, Aug-Sep
+            "min_temperature_c": 10.0,
+            "max_temperature_c": 25.0,
+            "frost_tolerant": True,
+            "expected_yield_per_sqm": 1.5,
+            "harvest_window_days": 30,
+            "sun_requirements": "full_sun",
+            "water_requirements": "medium",
+            "soil_ph_min": 5.5,
+            "soil_ph_max": 6.5,
+            "market_price_per_kg": 8.0,
+            "storage_life_days": 3,
+            "description": "Popular berry with high market value",
+            "growing_notes": "Mulch to keep berries clean. Remove runners for better fruit production."
+        },
+        {
+            "name": "Bell Peppers",
+            "scientific_name": "Capsicum annuum",
+            "category": "vegetable",
+            "growing_time_days": 80,
+            "planting_depth_cm": 1.0,
+            "spacing_cm": 45.0,
+            "row_spacing_cm": 60.0,
+            "best_planting_seasons": [4, 5, 6],  # April-June
+            "min_temperature_c": 18.0,
+            "max_temperature_c": 30.0,
+            "frost_tolerant": False,
+            "expected_yield_per_sqm": 3.0,
+            "harvest_window_days": 21,
+            "sun_requirements": "full_sun",
+            "water_requirements": "medium",
+            "soil_ph_min": 6.0,
+            "soil_ph_max": 7.0,
+            "market_price_per_kg": 4.0,
+            "storage_life_days": 10,
+            "description": "Colorful vegetable with good market demand",
+            "growing_notes": "Requires warm soil. Stake plants for support."
+        },
+        {
+            "name": "Basil",
+            "scientific_name": "Ocimum basilicum",
+            "category": "herb",
+            "growing_time_days": 30,
+            "planting_depth_cm": 0.5,
+            "spacing_cm": 20.0,
+            "row_spacing_cm": 30.0,
+            "best_planting_seasons": [4, 5, 6, 7, 8],  # April-August
+            "min_temperature_c": 15.0,
+            "max_temperature_c": 30.0,
+            "frost_tolerant": False,
+            "expected_yield_per_sqm": 1.0,
+            "harvest_window_days": 14,
+            "sun_requirements": "full_sun",
+            "water_requirements": "medium",
+            "soil_ph_min": 6.0,
+            "soil_ph_max": 7.5,
+            "market_price_per_kg": 15.0,
+            "storage_life_days": 3,
+            "description": "Popular culinary herb",
+            "growing_notes": "Pinch off flower buds to encourage leaf growth. Harvest regularly."
+        }
+    ]
+    
+    for crop_data in crops_data:
+        # Check if crop already exists
+        existing_crop = db.query(Crop).filter(Crop.name == crop_data["name"]).first()
+        if not existing_crop:
+            crop = Crop(**crop_data)
+            db.add(crop)
+    
+    db.commit()
+    print(f"Seeded {len(crops_data)} crops") 
