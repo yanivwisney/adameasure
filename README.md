@@ -118,4 +118,4 @@ npm run dev
 3. **Crop**: Crop metadata and growing information
 4. **Planting**: Actual planting records with dates and locations
 5. **Harvest**: Harvesting records with yields and dates
-6. **Selling Schedule**: Planned selling dates and frequencies 
+6. **Selling Schedule**: Planned selling dates and frequencies
