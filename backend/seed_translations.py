@@ -612,6 +612,20 @@ def get_default_translations():
         {"language": "he", "key": "dashboard.harvest", "value": "קציר", "category": "dashboard"},
         {"language": "he", "key": "dashboard.plant", "value": "נטיעה", "category": "dashboard"},
         {"language": "he", "key": "dashboard.high_demand_reason", "value": "גידול בביקוש גבוה למחזור מכירה הבא", "category": "dashboard"},
+        
+        # Priority levels - English
+        {"language": "en", "key": "dashboard.priority_high", "value": "High Priority", "category": "dashboard"},
+        {"language": "en", "key": "dashboard.priority_medium", "value": "Medium Priority", "category": "dashboard"},
+        {"language": "en", "key": "dashboard.priority_low", "value": "Low Priority", "category": "dashboard"},
+        {"language": "en", "key": "dashboard.expected_harvest", "value": "Expected Harvest", "category": "dashboard"},
+        {"language": "en", "key": "dashboard.market_demand", "value": "Market Demand", "category": "dashboard"},
+        
+        # Priority levels - Hebrew
+        {"language": "he", "key": "dashboard.priority_high", "value": "עדיפות גבוהה", "category": "dashboard"},
+        {"language": "he", "key": "dashboard.priority_medium", "value": "עדיפות בינונית", "category": "dashboard"},
+        {"language": "he", "key": "dashboard.priority_low", "value": "עדיפות נמוכה", "category": "dashboard"},
+        {"language": "he", "key": "dashboard.expected_harvest", "value": "קציר צפוי", "category": "dashboard"},
+        {"language": "he", "key": "dashboard.market_demand", "value": "ביקוש שוק", "category": "dashboard"},
     ]
 
 

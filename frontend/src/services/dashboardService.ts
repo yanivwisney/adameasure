@@ -29,6 +29,9 @@ export interface PlantingSuggestion {
   available_date: string
   suggested_crop: string
   reason: string
+  priority: 'high' | 'medium' | 'low'
+  expected_harvest_date: string
+  market_demand_score: number
 }
 
 export interface DashboardData {
