@@ -32,7 +32,7 @@ class Planting(PlantingBase):
     updated_at: datetime
     
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class PlantingSuggestion(BaseModel):
     crop_id: int

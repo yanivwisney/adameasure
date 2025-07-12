@@ -1,9 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, Text, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
-
-Base = declarative_base()
+from sqlalchemy.sql import func
+from app.core.database import Base
 
 class Planting(Base):
     __tablename__ = "plantings"
@@ -20,8 +18,8 @@ class Planting(Base):
     harvested_quantity = Column(Float, nullable=True)  # in kg
     notes = Column(Text, nullable=True)
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
     # Relationships
     crop = relationship("Crop", back_populates="plantings")
@@ -31,4 +29,4 @@ class Planting(Base):
     harvests = relationship("Harvest", back_populates="planting")
     
     class Config:
-        orm_mode = True 
+        from_attributes = True 

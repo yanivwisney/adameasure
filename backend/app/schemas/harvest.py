@@ -40,7 +40,7 @@ class HarvestResponse(HarvestBase):
     updated_at: datetime
     
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class HarvestSummary(BaseModel):
     id: int
@@ -55,4 +55,4 @@ class HarvestSummary(BaseModel):
     is_complete: bool
     
     class Config:
-        orm_mode = True 
+        from_attributes = True 

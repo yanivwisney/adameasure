@@ -1,9 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, Text, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
-
-Base = declarative_base()
+from sqlalchemy.sql import func
+from app.core.database import Base
 
 class Harvest(Base):
     __tablename__ = "harvests"
@@ -36,8 +34,8 @@ class Harvest(Base):
     
     # Status
     is_complete = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
     # Relationships
     planting = relationship("Planting", back_populates="harvests")
@@ -47,4 +45,4 @@ class Harvest(Base):
     crop = relationship("Crop")
     
     class Config:
-        orm_mode = True 
+        from_attributes = True 

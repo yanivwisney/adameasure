@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
+from .bed import Bed
 
 class FarmBase(BaseModel):
     name: str
@@ -25,10 +26,12 @@ class Farm(FarmBase):
     updated_at: datetime
     
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class FarmWithBeds(Farm):
     beds: List['Bed'] = []
     
     class Config:
-        orm_mode = True 
+        from_attributes = True
+
+FarmWithBeds.model_rebuild() 

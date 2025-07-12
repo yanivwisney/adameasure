@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
+from .line import Line
 
 class BedBase(BaseModel):
     name: str
@@ -30,10 +31,12 @@ class Bed(BedBase):
     updated_at: datetime
     
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class BedWithLines(Bed):
     lines: List['Line'] = []
     
     class Config:
-        orm_mode = True 
+        from_attributes = True
+
+BedWithLines.model_rebuild() 

@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
+from .planting import Planting
 
 class LineBase(BaseModel):
     name: str
@@ -30,10 +31,12 @@ class Line(LineBase):
     updated_at: datetime
     
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class LineWithPlantings(Line):
     plantings: List['Planting'] = []
     
     class Config:
-        orm_mode = True 
+        from_attributes = True
+
+LineWithPlantings.model_rebuild() 

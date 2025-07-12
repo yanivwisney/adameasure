@@ -1,7 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, Boolean
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from app.core.database import Base
 
 class Translation(Base):
     __tablename__ = "translations"
@@ -14,4 +12,4 @@ class Translation(Base):
     is_active = Column(Boolean, default=True)
     
     class Config:
-        orm_mode = True 
+        from_attributes = True 

@@ -48,7 +48,7 @@ const Harvests: React.FC = () => {
 
   const fetchHarvests = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/harvests/');
+      const response = await fetch('http://localhost:8001/api/v1/harvests/');
       if (response.ok) {
         const data = await response.json();
         setHarvests(data);
@@ -60,7 +60,7 @@ const Harvests: React.FC = () => {
 
   const fetchActivePlantings = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/plantings/?is_active=true');
+      const response = await fetch('http://localhost:8001/api/v1/plantings/?is_active=true');
       if (response.ok) {
         const data = await response.json();
         setPlantings(data);
@@ -75,7 +75,7 @@ const Harvests: React.FC = () => {
     if (!selectedPlanting) return;
 
     try {
-      const response = await fetch('http://localhost:8000/api/v1/harvests/', {
+      const response = await fetch('http://localhost:8001/api/v1/harvests/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

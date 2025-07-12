@@ -27,4 +27,7 @@ class SellingSchedule(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
     # Relationships
-    farm = relationship("Farm", back_populates="selling_schedules") 
+    farm = relationship("Farm", back_populates="selling_schedules")
+    
+    class Config:
+        from_attributes = True 

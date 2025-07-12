@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime, timedelta
 
-from ..database import get_db
+from ..core.database import get_db
 from ..models.harvest import Harvest
 from ..models.planting import Planting
 from ..models.crop import Crop

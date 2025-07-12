@@ -46,4 +46,7 @@ class Crop(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
     # Relationships
-    plantings = relationship("Planting", back_populates="crop", cascade="all, delete-orphan") 
+    plantings = relationship("Planting", back_populates="crop", cascade="all, delete-orphan")
+    
+    class Config:
+        from_attributes = True 
