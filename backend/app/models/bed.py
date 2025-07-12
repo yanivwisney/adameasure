@@ -1,13 +1,21 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, Text, Boolean, ForeignKey
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Float,
+    DateTime,
+    Text,
+    Boolean,
+    ForeignKey,
+)
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
+from sqlalchemy.sql import func
+from app.core.database import Base
 
-Base = declarative_base()
 
 class Bed(Base):
     __tablename__ = "beds"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
@@ -17,13 +25,15 @@ class Bed(Base):
     area = Column(Float, nullable=True)  # calculated area in square meters
     soil_type = Column(String(100), nullable=True)
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
     # Relationships
     farm = relationship("Farm", back_populates="beds")
     lines = relationship("Line", back_populates="bed", cascade="all, delete-orphan")
-    plantings = relationship("Planting", back_populates="bed", cascade="all, delete-orphan")
-    
+    plantings = relationship(
+        "Planting", back_populates="bed", cascade="all, delete-orphan"
+    )
+
     class Config:
-        orm_mode = True 
+        from_attributes = True

@@ -1,13 +1,21 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, Text, Boolean, ForeignKey
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Float,
+    DateTime,
+    Text,
+    Boolean,
+    ForeignKey,
+)
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
+from sqlalchemy.sql import func
+from app.core.database import Base
 
-Base = declarative_base()
 
 class Planting(Base):
     __tablename__ = "plantings"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     crop_id = Column(Integer, ForeignKey("crops.id"), nullable=False)
     farm_id = Column(Integer, ForeignKey("farms.id"), nullable=False)
@@ -20,14 +28,15 @@ class Planting(Base):
     harvested_quantity = Column(Float, nullable=True)  # in kg
     notes = Column(Text, nullable=True)
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
     # Relationships
     crop = relationship("Crop", back_populates="plantings")
     farm = relationship("Farm")
     bed = relationship("Bed", back_populates="plantings")
     line = relationship("Line", back_populates="plantings")
-    
+    harvests = relationship("Harvest", back_populates="planting")
+
     class Config:
-        orm_mode = True 
+        from_attributes = True

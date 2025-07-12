@@ -6,6 +6,7 @@ import { Farms } from './pages/Farms'
 import { Crops } from './pages/Crops'
 import { Plantings } from './pages/Plantings'
 import { Scheduler } from './pages/Scheduler'
+import Harvests from './pages/Harvests'
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/crops" element={<Crops />} />
           <Route path="/plantings" element={<Plantings />} />
           <Route path="/scheduler" element={<Scheduler />} />
+          <Route path="/harvests" element={<Harvests />} />
         </Routes>
       </Layout>
     </LanguageProvider>
