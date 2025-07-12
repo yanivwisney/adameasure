@@ -6,7 +6,9 @@ from app.api.endpoints import (
     selling_schedules,
     translations,
     lines,
+    dashboard,
 )
+from app.api import harvests
 
 api_router = APIRouter()
 
@@ -20,3 +22,5 @@ api_router.include_router(
     translations.router, prefix="/translations", tags=["translations"]
 )
 api_router.include_router(lines.router, prefix="/lines", tags=["lines"])
+api_router.include_router(harvests.router, tags=["harvests"])
+api_router.include_router(dashboard.router, prefix="/dashboard", tags=["dashboard"])
