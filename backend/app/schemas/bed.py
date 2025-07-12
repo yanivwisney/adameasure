@@ -3,6 +3,7 @@ from typing import Optional, List
 from datetime import datetime
 from .line import Line
 
+
 class BedBase(BaseModel):
     name: str
     description: Optional[str] = None
@@ -13,8 +14,10 @@ class BedBase(BaseModel):
     soil_type: Optional[str] = None
     is_active: bool = True
 
+
 class BedCreate(BedBase):
     pass
+
 
 class BedUpdate(BaseModel):
     name: Optional[str] = None
@@ -25,18 +28,21 @@ class BedUpdate(BaseModel):
     soil_type: Optional[str] = None
     is_active: Optional[bool] = None
 
+
 class Bed(BedBase):
     id: int
     created_at: datetime
     updated_at: datetime
-    
+
     class Config:
         from_attributes = True
+
 
 class BedWithLines(Bed):
-    lines: List['Line'] = []
-    
+    lines: List["Line"] = []
+
     class Config:
         from_attributes = True
 
-BedWithLines.model_rebuild() 
+
+BedWithLines.model_rebuild()

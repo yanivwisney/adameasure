@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 
+
 class PlantingBase(BaseModel):
     crop_id: int
     farm_id: int
@@ -15,8 +16,10 @@ class PlantingBase(BaseModel):
     notes: Optional[str] = None
     is_active: bool = True
 
+
 class PlantingCreate(PlantingBase):
     pass
+
 
 class PlantingUpdate(BaseModel):
     quantity: Optional[int] = None
@@ -26,13 +29,15 @@ class PlantingUpdate(BaseModel):
     notes: Optional[str] = None
     is_active: Optional[bool] = None
 
+
 class Planting(PlantingBase):
     id: int
     created_at: datetime
     updated_at: datetime
-    
+
     class Config:
         from_attributes = True
+
 
 class PlantingSuggestion(BaseModel):
     crop_id: int
@@ -43,12 +48,13 @@ class PlantingSuggestion(BaseModel):
     expected_harvest_date: datetime
     suggested_quantity: int
     priority: float
-    
+
     class Config:
         from_attributes = True
+
 
 class PlantingScheduleRequest(BaseModel):
     farm_id: int
     selling_schedule_id: int
     target_date: datetime
-    frequency_days: int = Field(..., gt=0) 
+    frequency_days: int = Field(..., gt=0)

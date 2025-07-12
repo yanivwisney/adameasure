@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 
+
 class CropBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     scientific_name: Optional[str] = None
@@ -26,8 +27,10 @@ class CropBase(BaseModel):
     growing_notes: Optional[str] = None
     is_active: bool = True
 
+
 class CropCreate(CropBase):
     pass
+
 
 class CropUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=255)
@@ -53,10 +56,11 @@ class CropUpdate(BaseModel):
     growing_notes: Optional[str] = None
     is_active: Optional[bool] = None
 
+
 class Crop(CropBase):
     id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
-    
+
     class Config:
-        from_attributes = True 
+        from_attributes = True

@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Session
 from app.models.crop import Crop
 
+
 def seed_crops(db: Session):
     """Seed the database with initial crop data"""
-    
+
     crops_data = [
         # Vegetables
         {
@@ -27,7 +28,7 @@ def seed_crops(db: Session):
             "market_price_per_kg": 3.5,
             "storage_life_days": 7,
             "description": "Popular summer vegetable with high market demand",
-            "growing_notes": "Requires staking or trellising. Prune suckers for better yield."
+            "growing_notes": "Requires staking or trellising. Prune suckers for better yield.",
         },
         {
             "name": "Lettuce",
@@ -50,7 +51,7 @@ def seed_crops(db: Session):
             "market_price_per_kg": 2.0,
             "storage_life_days": 10,
             "description": "Fast-growing leafy green, great for continuous harvest",
-            "growing_notes": "Plant in partial shade during hot weather. Harvest outer leaves for continuous production."
+            "growing_notes": "Plant in partial shade during hot weather. Harvest outer leaves for continuous production.",
         },
         {
             "name": "Carrots",
@@ -73,7 +74,7 @@ def seed_crops(db: Session):
             "market_price_per_kg": 1.8,
             "storage_life_days": 30,
             "description": "Root vegetable with good storage life",
-            "growing_notes": "Loose, well-drained soil is essential. Thin seedlings for better root development."
+            "growing_notes": "Loose, well-drained soil is essential. Thin seedlings for better root development.",
         },
         {
             "name": "Cucumbers",
@@ -96,7 +97,7 @@ def seed_crops(db: Session):
             "market_price_per_kg": 2.5,
             "storage_life_days": 7,
             "description": "Summer vegetable with high water content",
-            "growing_notes": "Requires consistent moisture. Trellising improves yield and reduces disease."
+            "growing_notes": "Requires consistent moisture. Trellising improves yield and reduces disease.",
         },
         {
             "name": "Spinach",
@@ -119,7 +120,7 @@ def seed_crops(db: Session):
             "market_price_per_kg": 3.0,
             "storage_life_days": 5,
             "description": "Nutrient-rich leafy green",
-            "growing_notes": "Plant in cool weather. Harvest outer leaves for continuous production."
+            "growing_notes": "Plant in cool weather. Harvest outer leaves for continuous production.",
         },
         # Fruits
         {
@@ -143,7 +144,7 @@ def seed_crops(db: Session):
             "market_price_per_kg": 8.0,
             "storage_life_days": 3,
             "description": "Popular berry with high market value",
-            "growing_notes": "Mulch to keep berries clean. Remove runners for better fruit production."
+            "growing_notes": "Mulch to keep berries clean. Remove runners for better fruit production.",
         },
         {
             "name": "Bell Peppers",
@@ -166,7 +167,7 @@ def seed_crops(db: Session):
             "market_price_per_kg": 4.0,
             "storage_life_days": 10,
             "description": "Colorful vegetable with good market demand",
-            "growing_notes": "Requires warm soil. Stake plants for support."
+            "growing_notes": "Requires warm soil. Stake plants for support.",
         },
         {
             "name": "Basil",
@@ -189,16 +190,16 @@ def seed_crops(db: Session):
             "market_price_per_kg": 15.0,
             "storage_life_days": 3,
             "description": "Popular culinary herb",
-            "growing_notes": "Pinch off flower buds to encourage leaf growth. Harvest regularly."
-        }
+            "growing_notes": "Pinch off flower buds to encourage leaf growth. Harvest regularly.",
+        },
     ]
-    
+
     for crop_data in crops_data:
         # Check if crop already exists
         existing_crop = db.query(Crop).filter(Crop.name == crop_data["name"]).first()
         if not existing_crop:
             crop = Crop(**crop_data)
             db.add(crop)
-    
+
     db.commit()
-    print(f"Seeded {len(crops_data)} crops") 
+    print(f"Seeded {len(crops_data)} crops")

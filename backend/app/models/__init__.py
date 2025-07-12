@@ -10,11 +10,11 @@ from .selling_schedule import SellingSchedule
 
 __all__ = [
     "Farm",
-    "Bed", 
+    "Bed",
     "Line",
     "Crop",
     "Planting",
     "Harvest",
     "Translation",
-    "SellingSchedule"
-] 
+    "SellingSchedule",
+]
