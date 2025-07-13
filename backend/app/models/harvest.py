@@ -55,6 +55,3 @@ class Harvest(Base):
     bed = relationship("Bed")
     line = relationship("Line")
     crop = relationship("Crop")
-
-    class Config:
-        from_attributes = True

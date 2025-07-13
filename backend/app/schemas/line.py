@@ -1,7 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
-from .planting import Planting
 
 
 class LineBase(BaseModel):
@@ -31,18 +30,8 @@ class LineUpdate(BaseModel):
 
 class Line(LineBase):
     id: int
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = Field(None, description="Creation timestamp")
+    updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
 
     class Config:
         from_attributes = True
-
-
-class LineWithPlantings(Line):
-    plantings: List["Planting"] = []
-
-    class Config:
-        from_attributes = True
-
-
-LineWithPlantings.model_rebuild()

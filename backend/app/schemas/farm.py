@@ -1,7 +1,9 @@
-from pydantic import BaseModel
-from typing import Optional, List
+from pydantic import BaseModel, Field
+from typing import Optional, List, TYPE_CHECKING
 from datetime import datetime
-from .bed import Bed
+
+if TYPE_CHECKING:
+    from .bed import Bed
 
 
 class FarmBase(BaseModel):
@@ -26,8 +28,8 @@ class FarmUpdate(BaseModel):
 
 class Farm(FarmBase):
     id: int
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = Field(None, description="Creation timestamp")
+    updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
 
     class Config:
         from_attributes = True
@@ -40,4 +42,6 @@ class FarmWithBeds(Farm):
         from_attributes = True
 
 
+# Import Bed after the class definition to avoid circular imports
+from .bed import Bed
 FarmWithBeds.model_rebuild()

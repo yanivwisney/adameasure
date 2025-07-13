@@ -21,6 +21,3 @@ class Farm(Base):
     selling_schedules = relationship(
         "SellingSchedule", back_populates="farm", cascade="all, delete-orphan"
     )
-
-    class Config:
-        from_attributes = True

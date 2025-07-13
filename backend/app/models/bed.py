@@ -34,6 +34,3 @@ class Bed(Base):
     plantings = relationship(
         "Planting", back_populates="bed", cascade="all, delete-orphan"
     )
-
-    class Config:
-        from_attributes = True

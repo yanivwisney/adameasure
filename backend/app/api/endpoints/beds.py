@@ -11,16 +11,19 @@ router = APIRouter()
 @router.post("/", response_model=BedSchema, status_code=status.HTTP_201_CREATED)
 def create_bed(bed: BedCreate, db: Session = Depends(get_db)):
     """Create a new bed"""
-    # Calculate area
-    area = bed.length * bed.width
+    # Calculate area if both length and width are provided
+    area = None
+    if bed.length and bed.width:
+        area = bed.length * bed.width
 
     db_bed = Bed(
         name=bed.name,
+        description=bed.description,
         farm_id=bed.farm_id,
         length=bed.length,
         width=bed.width,
         area=area,
-        notes=bed.notes,
+        soil_type=bed.soil_type,
         is_active=bed.is_active,
     )
     db.add(db_bed)

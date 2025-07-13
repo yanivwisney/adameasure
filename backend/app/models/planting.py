@@ -37,6 +37,3 @@ class Planting(Base):
     bed = relationship("Bed", back_populates="plantings")
     line = relationship("Line", back_populates="plantings")
     harvests = relationship("Harvest", back_populates="planting")
-
-    class Config:
-        from_attributes = True
