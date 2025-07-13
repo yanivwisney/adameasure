@@ -44,4 +44,5 @@ class FarmWithBeds(Farm):
 
 # Import Bed after the class definition to avoid circular imports
 from .bed import Bed
+
 FarmWithBeds.model_rebuild()

@@ -49,4 +49,5 @@ class BedWithLines(Bed):
 
 # Import Line after the class definition to avoid circular imports
 from .line import Line
+
 BedWithLines.model_rebuild()
