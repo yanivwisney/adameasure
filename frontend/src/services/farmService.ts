@@ -98,6 +98,48 @@ export interface LineUpdate {
   is_active?: boolean
 }
 
+export interface Planting {
+  id: number
+  farm_id: number
+  bed_id: number
+  line_id: number
+  crop_id: number
+  planting_date: string
+  expected_harvest_date: string
+  quantity: number
+  spacing: number
+  notes: string
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface PlantingCreate {
+  farm_id: number
+  bed_id: number
+  line_id: number
+  crop_id: number
+  planting_date: string
+  expected_harvest_date: string
+  quantity: number
+  spacing: number
+  notes: string
+  is_active: boolean
+}
+
+export interface PlantingUpdate {
+  farm_id?: number
+  bed_id?: number
+  line_id?: number
+  crop_id?: number
+  planting_date?: string
+  expected_harvest_date?: string
+  quantity?: number
+  spacing?: number
+  notes?: string
+  is_active?: boolean
+}
+
 export const farmService = {
   // Farm operations
   async getFarms(): Promise<Farm[]> {
@@ -125,9 +167,13 @@ export const farmService = {
   },
 
   // Bed operations
-  async getBeds(farmId?: number): Promise<Bed[]> {
-    const params = farmId ? `?farm_id=${farmId}` : ''
-    const response = await axios.get(`${API_BASE_URL}/beds/${params}`)
+  async getBeds(): Promise<Bed[]> {
+    const response = await axios.get(`${API_BASE_URL}/beds/`)
+    return response.data
+  },
+
+  async getBedsByFarm(farmId: number): Promise<Bed[]> {
+    const response = await axios.get(`${API_BASE_URL}/beds/?farm_id=${farmId}`)
     return response.data
   },
 
@@ -151,9 +197,8 @@ export const farmService = {
   },
 
   // Line operations
-  async getLines(bedId?: number): Promise<Line[]> {
-    const params = bedId ? `?bed_id=${bedId}` : ''
-    const response = await axios.get(`${API_BASE_URL}/lines/${params}`)
+  async getLines(): Promise<Line[]> {
+    const response = await axios.get(`${API_BASE_URL}/lines/`)
     return response.data
   },
 
@@ -179,5 +224,30 @@ export const farmService = {
 
   async deleteLine(lineId: number): Promise<void> {
     await axios.delete(`${API_BASE_URL}/lines/${lineId}`)
+  },
+
+  // Planting operations
+  async getPlantings(): Promise<Planting[]> {
+    const response = await axios.get(`${API_BASE_URL}/plantings/`)
+    return response.data
+  },
+
+  async getPlanting(plantingId: number): Promise<Planting> {
+    const response = await axios.get(`${API_BASE_URL}/plantings/${plantingId}`)
+    return response.data
+  },
+
+  async createPlanting(planting: PlantingCreate): Promise<Planting> {
+    const response = await axios.post(`${API_BASE_URL}/plantings/`, planting)
+    return response.data
+  },
+
+  async updatePlanting(plantingId: number, planting: PlantingUpdate): Promise<Planting> {
+    const response = await axios.put(`${API_BASE_URL}/plantings/${plantingId}`, planting)
+    return response.data
+  },
+
+  async deletePlanting(plantingId: number): Promise<void> {
+    await axios.delete(`${API_BASE_URL}/plantings/${plantingId}`)
   },
 } 

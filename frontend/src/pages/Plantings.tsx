@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useLanguage } from '../contexts/LanguageContext'
 import { farmService, Farm, Bed, Line } from '../services/farmService'
 
@@ -42,13 +43,7 @@ interface PlantingCreate {
 
 export function Plantings() {
   const { t } = useLanguage()
-  const [farms, setFarms] = useState<Farm[]>([])
-  const [beds, setBeds] = useState<Bed[]>([])
-  const [lines, setLines] = useState<Line[]>([])
-  const [crops, setCrops] = useState<Crop[]>([])
-  const [plantings, setPlantings] = useState<Planting[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient()
   
   // Modal states
   const [showPlantingModal, setShowPlantingModal] = useState(false)
@@ -61,7 +56,7 @@ export function Plantings() {
     bed_id: 0,
     line_id: 0,
     crop_id: 0,
-    planting_date: new Date().toISOString().split('T')[0],
+    planting_date: '',
     expected_harvest_date: '',
     quantity: 0,
     spacing: 0,
@@ -69,102 +64,114 @@ export function Plantings() {
     is_active: true
   })
 
-  useEffect(() => {
-    loadData()
-  }, [])
+  // Queries
+  const { data: farms = [], isLoading: farmsLoading, error: farmsError } = useQuery(
+    ['farms'],
+    farmService.getFarms
+  )
 
-  const loadData = async () => {
-    try {
-      setLoading(true)
-      const [farmsData, bedsData, linesData, cropsData, plantingsData] = await Promise.all([
-        farmService.getFarms(),
-        farmService.getBeds(),
-        farmService.getLines(),
-        fetch('http://localhost:8000/api/v1/crops/').then(res => res.json()),
-        fetch('http://localhost:8000/api/v1/plantings/').then(res => res.json())
-      ])
-      setFarms(farmsData)
-      setBeds(bedsData)
-      setLines(linesData)
-      setCrops(cropsData)
-      setPlantings(plantingsData)
-    } catch (err) {
-      setError('Failed to load data')
-      console.error('Error loading data:', err)
-    } finally {
-      setLoading(false)
+  const { data: beds = [], isLoading: bedsLoading, error: bedsError } = useQuery(
+    ['beds'],
+    farmService.getBeds
+  )
+
+  const { data: lines = [], isLoading: linesLoading, error: linesError } = useQuery(
+    ['lines'],
+    farmService.getLines
+  )
+
+  const { data: crops = [], isLoading: cropsLoading, error: cropsError } = useQuery(
+    ['crops'],
+    async () => {
+      const response = await fetch('http://localhost:8000/api/v1/crops/')
+      return response.json()
     }
-  }
+  )
 
-  const handleCreatePlanting = async () => {
-    try {
+  const { data: plantings = [], isLoading: plantingsLoading, error: plantingsError } = useQuery(
+    ['plantings'],
+    async () => {
+      const response = await fetch('http://localhost:8000/api/v1/plantings/')
+      return response.json()
+    }
+  )
+
+  // Mutations
+  const createPlantingMutation = useMutation(
+    async (planting: PlantingCreate) => {
       const response = await fetch('http://localhost:8000/api/v1/plantings/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(plantingForm),
+        body: JSON.stringify(planting),
       })
-      
-      if (!response.ok) {
-        throw new Error('Failed to create planting')
+      return response.json()
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['plantings'])
+        setPlantingForm({
+          farm_id: 0,
+          bed_id: 0,
+          line_id: 0,
+          crop_id: 0,
+          planting_date: '',
+          expected_harvest_date: '',
+          quantity: 0,
+          spacing: 0,
+          notes: '',
+          is_active: true
+        })
+        setShowPlantingModal(false)
       }
-      
-      const newPlanting = await response.json()
-      setPlantings([...plantings, newPlanting])
-      setPlantingForm({
-        farm_id: 0,
-        bed_id: 0,
-        line_id: 0,
-        crop_id: 0,
-        planting_date: new Date().toISOString().split('T')[0],
-        expected_harvest_date: '',
-        quantity: 0,
-        spacing: 0,
-        notes: '',
-        is_active: true
-      })
-      setShowPlantingModal(false)
-    } catch (err) {
-      setError('Failed to create planting')
-      console.error('Error creating planting:', err)
     }
+  )
+
+  const deletePlantingMutation = useMutation(farmService.deletePlanting, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['plantings'])
+    }
+  })
+
+  const handleCreatePlanting = () => {
+    createPlantingMutation.mutate(plantingForm)
   }
 
   const getBedsForFarm = (farmId: number) => {
-    return beds.filter(bed => bed.farm_id === farmId)
+    return (beds as Bed[]).filter(bed => bed.farm_id === farmId)
   }
 
   const getLinesForBed = (bedId: number) => {
-    return lines.filter(line => line.bed_id === bedId)
+    return (lines as Line[]).filter(line => line.bed_id === bedId)
   }
 
   const getPlantingsForLine = (lineId: number) => {
-    return plantings.filter(planting => planting.line_id === lineId && planting.is_active)
+    return (plantings as Planting[]).filter(planting => planting.line_id === lineId && planting.is_active)
   }
 
   const getCropName = (cropId: number) => {
-    const crop = crops.find(c => c.id === cropId)
+    const crop = (crops as Crop[]).find(c => c.id === cropId)
     return crop ? crop.name : 'Unknown Crop'
   }
 
   const getFarmName = (farmId: number) => {
-    const farm = farms.find(f => f.id === farmId)
+    const farm = (farms as Farm[]).find(f => f.id === farmId)
     return farm ? farm.name : 'Unknown Farm'
   }
 
   const getBedName = (bedId: number) => {
-    const bed = beds.find(b => b.id === bedId)
+    const bed = (beds as Bed[]).find(b => b.id === bedId)
     return bed ? bed.name : 'Unknown Bed'
   }
 
   const getLineName = (lineId: number) => {
-    const line = lines.find(l => l.id === lineId)
+    const line = (lines as Line[]).find(l => l.id === lineId)
     return line ? line.name : 'Unknown Line'
   }
 
   const calculateExpectedHarvestDate = (plantingDate: string, cropId: number) => {
-    const crop = crops.find(c => c.id === cropId)
+    const crop = (crops as Crop[]).find(c => c.id === cropId)
     if (!crop) return ''
     
     const date = new Date(plantingDate)
@@ -173,7 +180,7 @@ export function Plantings() {
   }
 
   const handleCropChange = (cropId: number) => {
-    const crop = crops.find(c => c.id === cropId)
+    const crop = (crops as Crop[]).find(c => c.id === cropId)
     if (crop && plantingForm.planting_date) {
       const expectedDate = calculateExpectedHarvestDate(plantingForm.planting_date, cropId)
       setPlantingForm({ ...plantingForm, crop_id: cropId, expected_harvest_date: expectedDate })
@@ -190,7 +197,10 @@ export function Plantings() {
     }
   }
 
-  if (loading) {
+  const isLoading = farmsLoading || bedsLoading || linesLoading || cropsLoading || plantingsLoading
+  const error = farmsError || bedsError || linesError || cropsError || plantingsError
+
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
@@ -201,9 +211,9 @@ export function Plantings() {
   if (error) {
     return (
       <div className="text-center py-8">
-        <p className="text-red-600 mb-4">{error}</p>
+        <p className="text-red-600 mb-4">Failed to load data</p>
         <button 
-          onClick={loadData}
+          onClick={() => queryClient.invalidateQueries()}
           className="btn btn-primary"
         >
           {t('common.retry')}
@@ -295,10 +305,20 @@ export function Plantings() {
                                               {t('plantings.quantity')}: {planting.quantity} {t('plantings.plants')}
                                             </p>
                                           </div>
-                                          <div className="text-right">
+                                          <div className="text-right flex flex-col gap-2">
                                             <span className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
                                               {t('plantings.active')}
                                             </span>
+                                            <button
+                                              onClick={() => {
+                                                if (window.confirm(t('plantings.confirm_delete'))) {
+                                                  deletePlantingMutation.mutate(planting.id)
+                                                }
+                                              }}
+                                              className="btn btn-danger btn-xs mt-2"
+                                            >
+                                              {t('common.delete')}
+                                            </button>
                                           </div>
                                         </div>
                                         {planting.notes && (
@@ -400,8 +420,10 @@ export function Plantings() {
                   className="input w-full"
                 >
                   <option value={0}>{t('plantings.select_crop')}</option>
-                  {crops.filter(crop => crop.is_active).map(crop => (
-                    <option key={crop.id} value={crop.id}>{crop.name}</option>
+                  {crops.map((crop: Crop) => (
+                    <option key={crop.id} value={crop.id}>
+                      {crop.name}
+                    </option>
                   ))}
                 </select>
               </div>

@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useLanguage } from '../contexts/LanguageContext'
 import { farmService, Farm, Bed, Line, FarmCreate, BedCreate, LineCreate } from '../services/farmService'
 
 export function Farms() {
   const { t } = useLanguage()
-  const [farms, setFarms] = useState<Farm[]>([])
-  const [beds, setBeds] = useState<Bed[]>([])
-  const [lines, setLines] = useState<Line[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient()
   
   // Modal states
   const [showFarmModal, setShowFarmModal] = useState(false)
@@ -47,33 +44,26 @@ export function Farms() {
     is_active: true
   })
 
-  useEffect(() => {
-    loadData()
-  }, [])
+  // Queries
+  const { data: farms = [], isLoading: farmsLoading, error: farmsError } = useQuery(
+    ['farms'],
+    farmService.getFarms
+  )
 
-  const loadData = async () => {
-    try {
-      setLoading(true)
-      const [farmsData, bedsData, linesData] = await Promise.all([
-        farmService.getFarms(),
-        farmService.getBeds(),
-        farmService.getLines()
-      ])
-      setFarms(farmsData)
-      setBeds(bedsData)
-      setLines(linesData)
-    } catch (err) {
-      setError('Failed to load data')
-      console.error('Error loading data:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { data: beds = [], isLoading: bedsLoading, error: bedsError } = useQuery(
+    ['beds'],
+    farmService.getBeds
+  )
 
-  const handleCreateFarm = async () => {
-    try {
-      const newFarm = await farmService.createFarm(farmForm)
-      setFarms([...farms, newFarm])
+  const { data: lines = [], isLoading: linesLoading, error: linesError } = useQuery(
+    ['lines'],
+    farmService.getLines
+  )
+
+  // Mutations
+  const createFarmMutation = useMutation(farmService.createFarm, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['farms'])
       setFarmForm({
         name: '',
         description: '',
@@ -82,16 +72,12 @@ export function Farms() {
         is_active: true
       })
       setShowFarmModal(false)
-    } catch (err) {
-      setError('Failed to create farm')
-      console.error('Error creating farm:', err)
     }
-  }
+  })
 
-  const handleCreateBed = async () => {
-    try {
-      const newBed = await farmService.createBed(bedForm)
-      setBeds([...beds, newBed])
+  const createBedMutation = useMutation(farmService.createBed, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['beds'])
       setBedForm({
         name: '',
         description: '',
@@ -102,16 +88,12 @@ export function Farms() {
         is_active: true
       })
       setShowBedModal(false)
-    } catch (err) {
-      setError('Failed to create bed')
-      console.error('Error creating bed:', err)
     }
-  }
+  })
 
-  const handleCreateLine = async () => {
-    try {
-      const newLine = await farmService.createLine(lineForm)
-      setLines([...lines, newLine])
+  const createLineMutation = useMutation(farmService.createLine, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['lines'])
       setLineForm({
         name: '',
         description: '',
@@ -123,21 +105,39 @@ export function Farms() {
         is_active: true
       })
       setShowLineModal(false)
-    } catch (err) {
-      setError('Failed to create line')
-      console.error('Error creating line:', err)
     }
+  })
+
+  const deleteFarmMutation = useMutation(farmService.deleteFarm, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['farms'])
+    }
+  })
+
+  const handleCreateFarm = () => {
+    createFarmMutation.mutate(farmForm)
+  }
+
+  const handleCreateBed = () => {
+    createBedMutation.mutate(bedForm)
+  }
+
+  const handleCreateLine = () => {
+    createLineMutation.mutate(lineForm)
   }
 
   const getBedsForFarm = (farmId: number) => {
-    return beds.filter(bed => bed.farm_id === farmId)
+    return (beds as Bed[]).filter(bed => bed.farm_id === farmId)
   }
 
   const getLinesForBed = (bedId: number) => {
-    return lines.filter(line => line.bed_id === bedId)
+    return (lines as Line[]).filter(line => line.bed_id === bedId)
   }
 
-  if (loading) {
+  const isLoading = farmsLoading || bedsLoading || linesLoading
+  const error = farmsError || bedsError || linesError
+
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
@@ -148,9 +148,9 @@ export function Farms() {
   if (error) {
     return (
       <div className="text-center py-8">
-        <p className="text-red-600 mb-4">{error}</p>
+        <p className="text-red-600 mb-4">Failed to load data</p>
         <button 
-          onClick={loadData}
+          onClick={() => queryClient.invalidateQueries()}
           className="btn btn-primary"
         >
           {t('common.retry')}
@@ -206,6 +206,16 @@ export function Farms() {
                     className="btn btn-secondary btn-sm flex items-center gap-1"
                   >
                     + {t('farms.add_bed')}
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (window.confirm(t('farms.confirm_delete'))) {
+                        deleteFarmMutation.mutate(farm.id)
+                      }
+                    }}
+                    className="btn btn-danger btn-sm flex items-center gap-1"
+                  >
+                    {t('common.delete')}
                   </button>
                 </div>
               </div>
