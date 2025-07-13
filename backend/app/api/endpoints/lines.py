@@ -8,7 +8,6 @@ from app.schemas.line import (
     LineCreate,
     LineUpdate,
     Line as LineSchema,
-    LineWithPlantings,
 )
 
 router = APIRouter()
@@ -42,7 +41,7 @@ def get_lines_by_bed(bed_id: int, db: Session = Depends(get_db)):
     return lines
 
 
-@router.get("/{line_id}", response_model=LineWithPlantings)
+@router.get("/{line_id}", response_model=LineSchema)
 def get_line(line_id: int, db: Session = Depends(get_db)):
     """Get a specific line by ID"""
     line = db.query(Line).filter(Line.id == line_id, Line.is_active == True).first()

@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.api import api_router
 from app.core.config import settings
+# Ensure all models are registered before app startup
+import app.models
 
 app = FastAPI(
     title="Farm Management System API",

@@ -36,6 +36,3 @@ class Line(Base):
     plantings = relationship(
         "Planting", back_populates="line", cascade="all, delete-orphan"
     )
-
-    class Config:
-        from_attributes = True
